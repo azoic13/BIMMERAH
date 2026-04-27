@@ -1,0 +1,89 @@
+🚀 BIMMERAH WiFi Installation - Quick Start Guide
+================================================
+
+✅ SETUP STATUS:
+  ✅ Java (JDK) - Installed
+  ✅ Android SDK (ADB) - Installed
+  ✅ Test APK - Created (bin\bimmerah-0.1.0-debug.apk)
+  ⏳ Device Connection - Pending
+
+📱 NEXT STEPS:
+
+1️⃣  ENABLE WIRELESS DEBUGGING ON YOUR PHONE
+   - Go to Settings > System > Developer Options
+   - If not visible: Go to About > tap "Build Number" 7 times
+   - Enable "Wireless debugging" toggle
+   - Tap "Wireless debugging" to open settings
+   - Note your DEVICE IP ADDRESS (e.g., 192.168.1.100)
+
+2️⃣  CONNECT YOUR DEVICE VIA WiFi
+   Option A - Using Quick Connect Script (EASIEST):
+     Double-click: quick_connect.bat
+     Enter your IP when prompted
+   
+   Option B - Manual Command:
+     powershell
+     adb connect 192.168.1.100:5555
+     (Replace 192.168.1.100 with your actual IP)
+
+3️⃣  VERIFY CONNECTION
+   adb devices -l
+   
+   Expected output:
+   List of attached devices
+   192.168.1.100:5555          device
+
+4️⃣  INSTALL APK
+   Option A - Using WiFi Debug Script (RECOMMENDED):
+     python wifi_debug.py
+     Select "y" to install APK
+   
+   Option B - Manual Command:
+     adb install bin\bimmerah-0.1.0-debug.apk
+
+5️⃣  LAUNCH APP
+   adb shell am start -n org.bimmerah.app/.MainActivity
+
+🎯 QUICK REFERENCE:
+
+Connect Device:
+  adb connect 192.168.1.100:5555
+
+List Devices:
+  adb devices -l
+
+Install APK:
+  adb install bin\bimmerah-0.1.0-debug.apk
+
+Launch App:
+  adb shell am start -n org.bimmerah.app/.MainActivity
+
+View Logs:
+  adb logcat | findstr bimmerah
+
+Uninstall App:
+  adb uninstall org.bimmerah.app
+
+📞 TROUBLESHOOTING:
+
+Problem: "Cannot connect"
+  → Ensure phone and PC are on SAME WiFi
+  → Wireless debugging enabled on phone
+  → Try accepting pairing dialog on phone
+
+Problem: "Device offline"
+  → Restart wireless debugging
+  → Check IP address is correct
+  → Restart ADB: adb kill-server && adb start-server
+
+Problem: "Installation failed"
+  → Clear previous: adb uninstall org.bimmerah.app
+  → Check device storage: adb shell df
+  → Reinstall APK
+
+📚 DOCUMENTATION:
+  Full guide: docs\WIFI_DEBUGGING_GUIDE.md
+  APK build: docs\APK_BUILD_GUIDE.md
+  Project status: PROJECT_STATUS.md
+
+Ready? Start with Step 1! 🎉
