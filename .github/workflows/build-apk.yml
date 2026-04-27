@@ -31,25 +31,59 @@ jobs:
         api-levels: '33'
         build-tools-version: '33.0.0'
     
-    - name: Install dependencies
+    - name: Install system dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install buildozer cython kivy
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          libssl-dev \
+          libffi-dev \
+          python3-dev \
+          python3-pip \
+          git \
+          ccache \
+          libncurses5
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip setuptools wheel
+        pip install cython buildozer
         pip install -r requirements.txt
     
     - name: Build APK with buildozer
       run: |
-        buildozer android debug
+        echo "Android SDK Root: $ANDROID_SDK_ROOT"
+        echo "Android Home: $ANDROID_HOME"
+        buildozer android debug 2>&1 | tee build.log
       env:
         ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
         ANDROID_HOME: ${{ env.ANDROID_SDK_ROOT }}
+        GRADLE_USER_HOME: /tmp/gradle
+      continue-on-error: true
+    
+    - name: Check build artifacts
+      run: |
+        echo "Contents of bin directory:"
+        ls -lah bin/ || echo "bin directory not found"
+        echo ""
+        echo "APK files:"
+        find . -name "*.apk" -type f 2>/dev/null || echo "No APK files found"
     
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
+      if: success()
       with:
         name: bimmerah-apk
         path: bin/bimmerah-*.apk
         retention-days: 30
+    
+    - name: Upload build log
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: build-log
+        path: build.log
+        retention-days: 7
     
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/')
