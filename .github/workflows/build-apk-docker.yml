@@ -1,0 +1,54 @@
+name: Build BIMMERAH APK (Docker)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    container:
+      image: kivy/kivy:latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Python dependencies
+      run: |
+        pip install --upgrade pip
+        pip install cython buildozer
+        pip install -r requirements.txt
+    
+    - name: Build APK with buildozer (in Docker)
+      run: |
+        echo "Building BIMMERAH APK..."
+        buildozer android debug 2>&1 | tee build.log
+      continue-on-error: true
+    
+    - name: Check build artifacts
+      run: |
+        echo "Contents of bin directory:"
+        ls -lah bin/ || echo "bin directory not found"
+        echo ""
+        echo "APK files:"
+        find . -name "*.apk" -type f 2>/dev/null || echo "No APK files found"
+    
+    - name: Upload APK artifact
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: bimmerah-apk
+        path: bin/bimmerah-*.apk
+        retention-days: 30
+    
+    - name: Upload build log
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: build-log
+        path: build.log
+        retention-days: 7

@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bimmerah"
+version = "0.1.0"
+description = "Free Android BMW Diagnostics App - like BimmerCode"
+authors = [
+    {name = "Developer", email = "dev@bimmerah.local"}
+]
+requires-python = ">=3.11"
+dependencies = [
+    "kivy>=2.1.0",
+    "requests>=2.31.0",
+    "pyjnius>=1.4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/azoic13/BIMMERAH"
+Repository = "https://github.com/azoic13/BIMMERAH.git"
+
+[tool.briefcase]
+project_name = "BIMMERAH"
+bundle = "org.bimmerah"
+app_name = "bimmerah"
+formal_name = "BIMMERAH"
+description = "Free Android BMW Diagnostics App"
+
+[tool.briefcase.app.bimmerah]
+formal_name = "BIMMERAH"
+description = "Free Android BMW Diagnostics App - like BimmerCode"
+bundle = "org.bimmerah"
+url = "https://github.com/azoic13/BIMMERAH"
+author = "Beginner Developer"
+author_email = "dev@bimmerah.local"
+license = "MIT"
+requires = [
+    "kivy>=2.1.0",
+    "requests>=2.31.0",
+    "pyjnius>=1.4.0",
+]
+
+[tool.briefcase.app.bimmerah.android]
+requires = [
+    "kivy>=2.1.0",
+    "requests>=2.31.0",
+    "pyjnius>=1.4.0",
+]
+permissions = [
+    "INTERNET",
+    "CHANGE_WIFI_STATE",
+    "ACCESS_WIFI_STATE",
+    "ACCESS_FINE_LOCATION",
+    "ACCESS_COARSE_LOCATION",
+    "BLUETOOTH",
+    "BLUETOOTH_ADMIN",
+    "BLUETOOTH_SCAN",
+    "BLUETOOTH_CONNECT",
+]
+
+[tool.briefcase.app.bimmerah.android.gradle]
+dependencies = [
+    "androidx.appcompat:appcompat:1.6.1",
+]
