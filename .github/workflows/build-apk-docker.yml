@@ -1,4 +1,4 @@
-name: Build BIMMERAH APK (Docker)
+name: Build BIMMERAH APK (p4a)
 
 on:
   push:
@@ -11,22 +11,52 @@ jobs:
   build:
     runs-on: ubuntu-latest
     
-    container:
-      image: kivy/kivy:latest
-    
     steps:
     - uses: actions/checkout@v4
     
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+    
+    - name: Set up Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+    
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-levels: '33'
+        build-tools-version: '33.0.0'
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          libssl-dev \
+          libffi-dev \
+          python3-dev \
+          git \
+          ccache \
+          libncurses5
+    
     - name: Install Python dependencies
       run: |
-        pip install --upgrade pip
-        pip install cython buildozer
+        python -m pip install --upgrade pip setuptools wheel cython
+        pip install buildozer kivy
         pip install -r requirements.txt
     
-    - name: Build APK with buildozer (in Docker)
+    - name: Build APK with buildozer
       run: |
-        echo "Building BIMMERAH APK..."
+        echo "Building BIMMERAH APK with buildozer..."
         buildozer android debug 2>&1 | tee build.log
+      env:
+        ANDROID_SDK_ROOT: /home/runner/android-sdk
+        ANDROID_HOME: /home/runner/android-sdk
+        GRADLE_USER_HOME: /tmp/gradle
       continue-on-error: true
     
     - name: Check build artifacts
