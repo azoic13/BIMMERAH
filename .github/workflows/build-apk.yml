@@ -42,7 +42,7 @@ jobs:
           python3-pip \
           git \
           ccache \
-          libncurses5
+          libncurses-dev
     
     - name: Install Python dependencies
       run: |
